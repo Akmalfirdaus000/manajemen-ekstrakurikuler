@@ -24,7 +24,7 @@ use App\Http\Controllers\Siswa\SiswaPendaftaranController;
 
 // Halaman Utama (sementara)
 Route::get('/', function () {
-    return view('welcome');
+    return view('landing');
 });
 
 

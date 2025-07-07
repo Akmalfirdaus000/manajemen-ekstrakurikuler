@@ -13,4 +13,5 @@ class PendaftaranController extends Controller
     return view('pendaftaran.index', compact('pendaftarans'));
 }
 
+
 }

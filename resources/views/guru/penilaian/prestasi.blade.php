@@ -9,50 +9,39 @@
     </div>
 @endif
 
+{{-- Form Pilih Ekskul --}}
+<form method="GET" action="{{ route('guru.prestasi.create') }}" class="mb-6">
+    <label for="ekskul_id" class="block text-sm font-medium text-gray-700">Pilih Ekskul</label>
+    <select name="ekskul_id" id="ekskul_id" onchange="this.form.submit()"
+            class="w-full mt-1 px-4 py-2 border rounded focus:ring-2 focus:ring-red-500" required>
+        <option value="">-- Pilih Ekskul --</option>
+        @foreach ($ekskuls as $ekskul)
+            <option value="{{ $ekskul->id }}" {{ request('ekskul_id') == $ekskul->id ? 'selected' : '' }}>
+                {{ $ekskul->nama }}
+            </option>
+        @endforeach
+    </select>
+</form>
+
+@if(request('ekskul_id'))
 <form action="{{ route('guru.prestasi.store') }}" method="POST" class="bg-white p-6 rounded shadow max-w-3xl space-y-6">
     @csrf
+    <input type="hidden" name="ekskul_id" value="{{ request('ekskul_id') }}">
 
-    {{-- Pilih Ekskul --}}
+    {{-- Pilih Siswa --}}
     <div>
-        <label for="ekskul_id" class="block text-sm font-medium text-gray-700">Pilih Ekskul</label>
-        <select name="ekskul_id" id="ekskul_id" onchange="this.form.submit()"
+        <label for="user_id" class="block text-sm font-medium text-gray-700">Pilih Siswa</label>
+        <select name="user_id" id="user_id"
                 class="w-full mt-1 px-4 py-2 border rounded focus:ring-2 focus:ring-red-500" required>
-            <option value="">-- Pilih Ekskul --</option>
-            @foreach ($ekskuls as $ekskul)
-                <option value="{{ $ekskul->id }}" {{ old('ekskul_id', request('ekskul_id')) == $ekskul->id ? 'selected' : '' }}>
-                    {{ $ekskul->nama }}
+            <option value="">-- Pilih Siswa --</option>
+            @foreach ($siswaList as $item)
+                <option value="{{ $item->siswa->id }}" {{ old('user_id') == $item->siswa->id ? 'selected' : '' }}>
+                    {{ $item->siswa->name }}
                 </option>
             @endforeach
         </select>
-        @error('ekskul_id') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+        @error('user_id') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
     </div>
-
-    {{-- Daftar Siswa --}}
-    @php
-        $siswaList = request('ekskul_id')
-            ? \App\Models\Pendaftaran::with('siswa')->where('ekskul_id', request('ekskul_id'))->get()
-            : collect();
-    @endphp
-
-    @if ($siswaList->count())
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Siswa Pemenang</label>
-            <div class="space-y-2 border rounded p-4 max-h-60 overflow-y-auto">
-                @foreach ($siswaList as $item)
-                    <label class="flex items-center space-x-3">
-                        <input type="radio" name="user_id" value="{{ $item->siswa->id }}" required
-                               {{ old('user_id') == $item->siswa->id ? 'checked' : '' }}>
-                        <span>{{ $item->siswa->name }}</span>
-                    </label>
-                @endforeach
-            </div>
-            @error('user_id') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
-        </div>
-    @elseif(request('ekskul_id'))
-        <div class="mt-4 p-4 bg-yellow-50 border border-yellow-300 text-yellow-700 rounded text-sm">
-            Belum ada siswa yang mendaftar ekskul ini.
-        </div>
-    @endif
 
     {{-- Nama Event --}}
     <div>
@@ -66,8 +55,7 @@
     <div>
         <label class="block text-sm font-medium text-gray-700">Tingkat</label>
         <input type="text" name="tingkat" value="{{ old('tingkat') }}"
-               class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-red-500"
-               placeholder="Contoh: Sekolah, Kabupaten, Nasional" required>
+               class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-red-500" required>
         @error('tingkat') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
     </div>
 
@@ -75,8 +63,7 @@
     <div>
         <label class="block text-sm font-medium text-gray-700">Peringkat</label>
         <input type="text" name="peringkat" value="{{ old('peringkat') }}"
-               class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-red-500"
-               placeholder="Contoh: Juara 1, Harapan 2" required>
+               class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-red-500" required>
         @error('peringkat') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
     </div>
 
@@ -97,4 +84,5 @@
         </button>
     </div>
 </form>
+@endif
 @endsection

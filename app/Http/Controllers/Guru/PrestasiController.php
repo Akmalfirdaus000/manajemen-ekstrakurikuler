@@ -20,11 +20,20 @@ class PrestasiController extends Controller
         return view('guru.penilaian.prestasi-index', compact('prestasis'));
     }
 
-    public function create()
-    {
-        $ekskuls = auth()->user()->ekskuls;
-        return view('guru.penilaian.prestasi', compact('ekskuls'));
+public function create(Request $request)
+{
+    $ekskuls = auth()->user()->ekskuls;
+
+    $siswaList = collect();
+    if ($request->has('ekskul_id')) {
+        $siswaList = \App\Models\Pendaftaran::with('siswa')
+            ->where('ekskul_id', $request->ekskul_id)
+            ->get();
     }
+
+    return view('guru.penilaian.prestasi', compact('ekskuls', 'siswaList'));
+}
+
 
     public function store(Request $request)
     {
